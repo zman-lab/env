@@ -1,0 +1,18 @@
+{
+  "lastSyncCommit": "e6a76c2",
+  "lastSyncDate": "2026-01-23",
+  "excluded": {
+    "skills": [],
+    "mcps": []
+  },
+  "synced": {
+    "skills": [
+      "do", "wiki", "dooray-task", "weekly-report",
+      "build-all", "build-poker-server", "build-gia-admin", "build-gia-core", "build-betting-base",
+      "hps-run", "sync-gamedata", "ut", "sync-env"
+    ],
+    "mcps": [
+      "dooray-mcp"
+    ]
+  }
+}
