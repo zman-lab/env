@@ -331,7 +331,9 @@
                     <tr>
                         <td><input type="checkbox" data-category="git" data-item="ssh" data-requires="git"></td>
                         <td>SSH 키 생성</td>
-                        <td class="desc">회사 레포 clone/push용 <span class="dep">(→ Git)</span></td>
+                        <td class="desc">회사 레포 clone/push용 <span class="dep">(→ Git)</span>
+                            <div style="font-size:11px; color:#34c759; margin-top:4px;">✓ 설치 후 Claude가 GitHub 등록 방법 안내해드려요</div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -700,16 +702,39 @@
             updateFormVisibility();
         }
 
+        // SSH가 필요한 스킬들
+        const skillsRequiringSsh = [
+            'skill-do', 'skill-wiki', 'skill-dooray-task', 'skill-weekly-report',
+            'skill-build-all', 'skill-build-poker', 'skill-build-gia',
+            'skill-build-betting', 'skill-hps-run', 'skill-sync-gamedata'
+        ];
+
         // 의존성 체크
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             cb.addEventListener('change', function() {
+                const itemName = this.dataset.item;
                 const requires = this.dataset.requires;
+
+                // 기본 의존성 (data-requires)
                 if (this.checked && requires) {
                     const reqCb = document.querySelector(`[data-item="${requires}"]`);
                     if (reqCb && !reqCb.checked) {
                         reqCb.checked = true;
                     }
                 }
+
+                // 커스텀 스킬 선택 시 SSH 자동 체크
+                if (this.checked && skillsRequiringSsh.includes(itemName)) {
+                    const sshCb = document.querySelector('[data-item="ssh"]');
+                    const gitCb = document.querySelector('[data-item="git"]');
+                    if (sshCb && !sshCb.checked) {
+                        sshCb.checked = true;
+                    }
+                    if (gitCb && !gitCb.checked) {
+                        gitCb.checked = true;
+                    }
+                }
+
                 updateFormVisibility();
             });
         });
