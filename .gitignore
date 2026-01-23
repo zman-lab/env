@@ -1,0 +1,25 @@
+# 로그 파일
+*.log
+setup.log
+
+# OS 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# 백업 파일
+*.backup.*
+*.bak
+
+# 개인 설정 (API 키 등)
+.env
+.env.local
+secrets.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,14 @@
+# GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    AddKeysToAgent yes
+    UseKeychain yes
+
+# 예시: 사내 Git 서버
+# Host company-git
+#     HostName git.company.com
+#     User git
+#     IdentityFile ~/.ssh/id_ed25519_company
+#     AddKeysToAgent yes

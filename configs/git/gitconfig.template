@@ -1,0 +1,41 @@
+[user]
+    # TODO: 아래 값을 본인 정보로 수정하세요
+    name = Your Name
+    email = your.email@example.com
+
+[core]
+    editor = vim
+    autocrlf = input
+    ignorecase = false
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = false
+
+[push]
+    default = current
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --decorate -20
+    last = log -1 HEAD
+    unstage = reset HEAD --
+    visual = !gitk
+
+[color]
+    ui = auto
+
+[diff]
+    tool = vimdiff
+
+[merge]
+    tool = vimdiff
+
+# macOS 키체인 사용 (HTTPS)
+[credential]
+    helper = osxkeychain

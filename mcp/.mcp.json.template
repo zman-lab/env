@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "dooray-mcp": {
+      "command": "{{HOME}}/init/mcp/dooray-mcp/.venv/bin/python",
+      "args": ["{{HOME}}/init/mcp/dooray-mcp/main.py"],
+      "env": {
+        "DOORAY_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
