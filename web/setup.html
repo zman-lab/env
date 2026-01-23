@@ -367,7 +367,7 @@
     <!-- 커스텀 스킬 -->
     <div class="card">
         <h2 onclick="toggleSection('skill-custom')">
-            커스텀 스킬 <span class="section-badge">12개</span>
+            커스텀 스킬 <span class="section-badge">13개</span>
             <span class="toggle" id="toggle-skill-custom">▼</span>
         </h2>
         <div class="card-content" id="section-skill-custom">
@@ -397,6 +397,11 @@
                         <td><input type="checkbox" data-category="skill-custom" data-item="skill-weekly-report"></td>
                         <td>/weekly-report</td>
                         <td class="desc">주간업무보고 작성</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-day-work"></td>
+                        <td>/day-work</td>
+                        <td class="desc">오늘 할 일 정리 (HTML 대시보드)</td>
                     </tr>
                     <tr class="category"><td colspan="3">빌드 & 실행</td></tr>
                     <tr>
@@ -705,7 +710,7 @@
         // SSH가 필요한 스킬들
         const skillsRequiringSsh = [
             'skill-do', 'skill-wiki', 'skill-dooray-task', 'skill-weekly-report',
-            'skill-build-all', 'skill-build-poker', 'skill-build-gia',
+            'skill-day-work', 'skill-build-all', 'skill-build-poker', 'skill-build-gia',
             'skill-build-betting', 'skill-hps-run', 'skill-sync-gamedata'
         ];
 
