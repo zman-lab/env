@@ -10,7 +10,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            max-width: 700px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
             background: #f5f5f7;
@@ -38,6 +38,25 @@
             color: #1d1d1f;
             border-bottom: 1px solid #e5e5e5;
             padding-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card h2:hover {
+            color: #0071e3;
+        }
+        .card h2 .toggle {
+            font-size: 14px;
+            color: #86868b;
+        }
+        .card-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .card-content.collapsed {
+            max-height: 0;
+            padding-top: 0;
         }
         table {
             width: 100%;
@@ -45,8 +64,9 @@
         }
         th, td {
             text-align: left;
-            padding: 12px 8px;
+            padding: 10px 8px;
             border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
         }
         th {
             font-weight: 600;
@@ -65,14 +85,13 @@
             height: 18px;
             cursor: pointer;
         }
-        .dep {
+        .desc {
             color: #86868b;
             font-size: 13px;
         }
-        .dep-warn {
+        .dep {
             color: #ff9500;
             font-size: 12px;
-            margin-left: 8px;
         }
         .form-group {
             margin-bottom: 16px;
@@ -104,7 +123,7 @@
             color: #0071e3;
         }
         .hidden {
-            display: none;
+            display: none !important;
         }
         .btn {
             width: 100%;
@@ -121,14 +140,11 @@
         .btn:hover {
             background: #0077ed;
         }
-        .btn:disabled {
-            background: #d2d2d7;
-            cursor: not-allowed;
-        }
         .quick-select {
             display: flex;
             gap: 10px;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
         .quick-btn {
             padding: 8px 16px;
@@ -141,10 +157,14 @@
         .quick-btn:hover {
             background: #f5f5f7;
         }
-        .quick-btn.active {
-            background: #0071e3;
-            color: white;
-            border-color: #0071e3;
+        .section-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #86868b;
+            margin-left: 8px;
         }
         .success-modal {
             display: none;
@@ -184,114 +204,357 @@
             font-family: monospace;
             margin: 16px 0;
         }
+        .category {
+            font-weight: 600;
+            color: #86868b;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 16px 8px 8px;
+            background: #fafafa;
+        }
     </style>
 </head>
 <body>
     <h1>🛠️ 개발 환경 설정</h1>
     <p class="subtitle">설치할 항목을 선택하고 필요한 정보를 입력하세요</p>
 
+    <!-- 기본 개발 도구 -->
     <div class="card">
-        <h2>설치 항목 선택</h2>
-
-        <div class="quick-select">
-            <button class="quick-btn" onclick="selectAll()">전체 선택</button>
-            <button class="quick-btn" onclick="selectNone()">전체 해제</button>
-            <button class="quick-btn" onclick="selectBasic()">기본만</button>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th class="checkbox-cell"></th>
-                    <th>항목</th>
-                    <th>설명</th>
-                    <th>의존성</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="checkbox" id="item-1" data-item="java" checked></td>
-                    <td>Java 17</td>
-                    <td class="dep">SDKMAN + Zulu JDK</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-2" data-item="node" checked></td>
-                    <td>Node.js 20</td>
-                    <td class="dep">nvm + LTS</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-3" data-item="python" checked></td>
-                    <td>Python 3.12</td>
-                    <td class="dep">pyenv</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-4" data-item="uv" data-requires="python"></td>
-                    <td>uv</td>
-                    <td class="dep">Python 패키지 관리자</td>
-                    <td><span class="dep">Python</span></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-5" data-item="git" checked></td>
-                    <td>Git 설정</td>
-                    <td class="dep">사용자 정보 설정</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-6" data-item="ssh" data-requires="git"></td>
-                    <td>SSH 키 생성</td>
-                    <td class="dep">GitHub 연동용</td>
-                    <td><span class="dep">Git</span></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-7" data-item="mcp" data-requires="python"></td>
-                    <td>Dooray MCP</td>
-                    <td class="dep">두레이 API 연동</td>
-                    <td><span class="dep">Python</span></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-8" data-item="skills"></td>
-                    <td>Claude 스킬</td>
-                    <td class="dep">/do, /wiki 등</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" id="item-9" data-item="tools" checked></td>
-                    <td>기타 도구</td>
-                    <td class="dep">bat, fzf, ripgrep, jq</td>
-                    <td>-</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card" id="git-config" >
-        <h2>Git 설정</h2>
-        <div class="form-group">
-            <label for="git-name">이름</label>
-            <input type="text" id="git-name" placeholder="홍길동">
-        </div>
-        <div class="form-group">
-            <label for="git-email">이메일</label>
-            <input type="email" id="git-email" placeholder="hong@example.com">
+        <h2 onclick="toggleSection('basic')">
+            기본 개발 도구 <span class="section-badge">필수</span>
+            <span class="toggle" id="toggle-basic">▼</span>
+        </h2>
+        <div class="card-content" id="section-basic">
+            <div class="quick-select">
+                <button class="quick-btn" onclick="selectCategory('basic', true)">전체 선택</button>
+                <button class="quick-btn" onclick="selectCategory('basic', false)">전체 해제</button>
+            </div>
+            <table>
+                <thead>
+                    <tr><th></th><th>항목</th><th>설명</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" data-category="basic" data-item="java" checked></td>
+                        <td>Java 17</td>
+                        <td class="desc">SDKMAN + Zulu JDK</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="basic" data-item="node" checked></td>
+                        <td>Node.js 20</td>
+                        <td class="desc">nvm + LTS 버전</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="basic" data-item="python" checked></td>
+                        <td>Python 3.12</td>
+                        <td class="desc">pyenv + 최신 버전</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="basic" data-item="uv" data-requires="python"></td>
+                        <td>uv</td>
+                        <td class="desc">Python 패키지 관리자 <span class="dep">(→ Python)</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="basic" data-item="tools" checked></td>
+                        <td>CLI 도구</td>
+                        <td class="desc">bat, fzf, ripgrep, jq, tree, lsd</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="card hidden" id="mcp-config">
-        <h2>Dooray MCP 설정</h2>
-        <div class="form-group">
-            <label for="dooray-api-key">Dooray API 키</label>
-            <input type="text" id="dooray-api-key" placeholder="dooray-api-xxxxx">
-            <p class="hint">
-                <a href="https://nhnent.dooray.com" target="_blank">Dooray</a> →
-                설정 → 개인 설정 → API 키 관리에서 발급
-            </p>
+    <!-- Git & SSH -->
+    <div class="card">
+        <h2 onclick="toggleSection('git')">
+            Git & SSH
+            <span class="toggle" id="toggle-git">▼</span>
+        </h2>
+        <div class="card-content" id="section-git">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" data-category="git" data-item="git" checked></td>
+                        <td>Git 설정</td>
+                        <td class="desc">사용자 이름, 이메일 설정</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="git" data-item="ssh" data-requires="git"></td>
+                        <td>SSH 키 생성</td>
+                        <td class="desc">GitHub 연동용 <span class="dep">(→ Git)</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <button class="btn" onclick="saveConfig()">설치 시작</button>
+    <!-- MCP 서버 -->
+    <div class="card">
+        <h2 onclick="toggleSection('mcp')">
+            MCP 서버 <span class="section-badge">9개</span>
+            <span class="toggle" id="toggle-mcp">▼</span>
+        </h2>
+        <div class="card-content" id="section-mcp">
+            <div class="quick-select">
+                <button class="quick-btn" onclick="selectCategory('mcp', true)">전체 선택</button>
+                <button class="quick-btn" onclick="selectCategory('mcp', false)">전체 해제</button>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-dooray" data-requires="python"></td>
+                        <td>dooray-mcp</td>
+                        <td class="desc">두레이 API 연동 <span class="dep">(→ Python)</span></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-alpha"></td>
+                        <td>elasticsearch-alpha</td>
+                        <td class="desc">ES 알파 환경</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-real"></td>
+                        <td>elasticsearch-real</td>
+                        <td class="desc">ES 리얼 환경</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-alpha"></td>
+                        <td>mysql-alpha-game</td>
+                        <td class="desc">MySQL 알파 환경</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-dev"></td>
+                        <td>mysql-dev-game</td>
+                        <td class="desc">MySQL 개발 환경</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-real"></td>
+                        <td>mysql-real-game</td>
+                        <td class="desc">MySQL 리얼 환경</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-context7"></td>
+                        <td>context7</td>
+                        <td class="desc">라이브러리 문서 검색</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-pptx"></td>
+                        <td>pptx</td>
+                        <td class="desc">파워포인트 생성/편집</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-thinking"></td>
+                        <td>sequential-thinking</td>
+                        <td class="desc">순차적 사고 도우미</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 커스텀 스킬 -->
+    <div class="card">
+        <h2 onclick="toggleSection('skill-custom')">
+            커스텀 스킬 <span class="section-badge">12개</span>
+            <span class="toggle" id="toggle-skill-custom">▼</span>
+        </h2>
+        <div class="card-content" id="section-skill-custom">
+            <div class="quick-select">
+                <button class="quick-btn" onclick="selectCategory('skill-custom', true)">전체 선택</button>
+                <button class="quick-btn" onclick="selectCategory('skill-custom', false)">전체 해제</button>
+            </div>
+            <table>
+                <tbody>
+                    <tr class="category"><td colspan="3">업무 자동화</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-do"></td>
+                        <td>/do</td>
+                        <td class="desc">두레이 업무 기반 작업 자동화</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-wiki"></td>
+                        <td>/wiki</td>
+                        <td class="desc">두레이 위키 문서 작성</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-dooray-task"></td>
+                        <td>/dooray-task</td>
+                        <td class="desc">두레이 업무 조회</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-weekly-report"></td>
+                        <td>/weekly-report</td>
+                        <td class="desc">주간업무보고 작성</td>
+                    </tr>
+                    <tr class="category"><td colspan="3">빌드 & 실행</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-build-all"></td>
+                        <td>/build-all</td>
+                        <td class="desc">전체 프로젝트 빌드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-build-poker"></td>
+                        <td>/build-poker-server</td>
+                        <td class="desc">hangame-poker-server 빌드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-build-gia"></td>
+                        <td>/build-gia-*</td>
+                        <td class="desc">gia-core, gia-poker-admin 빌드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-build-betting"></td>
+                        <td>/build-betting-base</td>
+                        <td class="desc">betting_base 빌드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-hps-run"></td>
+                        <td>/hps-run</td>
+                        <td class="desc">hangame-poker-server 실행/설정</td>
+                    </tr>
+                    <tr class="category"><td colspan="3">기타</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-sync-gamedata"></td>
+                        <td>/sync-gamedata</td>
+                        <td class="desc">GameData Zone 동기화</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-ut"></td>
+                        <td>/ut</td>
+                        <td class="desc">ultrathink 모드</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Anthropic 스킬 -->
+    <div class="card">
+        <h2 onclick="toggleSection('skill-anthropic')">
+            Anthropic 스킬 <span class="section-badge">16개</span>
+            <span class="toggle" id="toggle-skill-anthropic">▼</span>
+        </h2>
+        <div class="card-content" id="section-skill-anthropic">
+            <div class="quick-select">
+                <button class="quick-btn" onclick="selectCategory('skill-anthropic', true)">전체 선택</button>
+                <button class="quick-btn" onclick="selectCategory('skill-anthropic', false)">전체 해제</button>
+            </div>
+            <table>
+                <tbody>
+                    <tr class="category"><td colspan="3">문서 도구</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-docx"></td>
+                        <td>/docx</td>
+                        <td class="desc">Word 문서 생성/편집</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-xlsx"></td>
+                        <td>/xlsx</td>
+                        <td class="desc">Excel 파일 생성/편집</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-pptx"></td>
+                        <td>/pptx</td>
+                        <td class="desc">PowerPoint 생성/편집</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-pdf"></td>
+                        <td>/pdf</td>
+                        <td class="desc">PDF 처리/분석</td>
+                    </tr>
+                    <tr class="category"><td colspan="3">디자인</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-canvas"></td>
+                        <td>/canvas-design</td>
+                        <td class="desc">캔버스 기반 디자인</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-frontend"></td>
+                        <td>/frontend-design</td>
+                        <td class="desc">프론트엔드 디자인</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-algorithmic"></td>
+                        <td>/algorithmic-art</td>
+                        <td class="desc">알고리즘 아트 생성</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-brand"></td>
+                        <td>/brand-guidelines</td>
+                        <td class="desc">브랜드 가이드라인</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-theme"></td>
+                        <td>/theme-factory</td>
+                        <td class="desc">테마 스타일링</td>
+                    </tr>
+                    <tr class="category"><td colspan="3">개발</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-mcp-builder"></td>
+                        <td>/mcp-builder</td>
+                        <td class="desc">MCP 서버 개발 가이드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-webapp"></td>
+                        <td>/webapp-testing</td>
+                        <td class="desc">웹앱 테스트 (Playwright)</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-creator"></td>
+                        <td>/skill-creator</td>
+                        <td class="desc">스킬 생성 가이드</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-web-artifacts"></td>
+                        <td>/web-artifacts-builder</td>
+                        <td class="desc">웹 아티팩트 빌드</td>
+                    </tr>
+                    <tr class="category"><td colspan="3">기타</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-internal"></td>
+                        <td>/internal-comms</td>
+                        <td class="desc">내부 커뮤니케이션</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-doc-co"></td>
+                        <td>/doc-coauthoring</td>
+                        <td class="desc">문서 공동 작성</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-slack-gif"></td>
+                        <td>/slack-gif-creator</td>
+                        <td class="desc">Slack GIF 생성</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 설정 입력 -->
+    <div class="card" id="config-section">
+        <h2>설정 정보 입력</h2>
+        <div id="git-config">
+            <div class="form-group">
+                <label for="git-name">Git 이름</label>
+                <input type="text" id="git-name" placeholder="홍길동">
+            </div>
+            <div class="form-group">
+                <label for="git-email">Git 이메일</label>
+                <input type="email" id="git-email" placeholder="hong@example.com">
+            </div>
+        </div>
+        <div id="mcp-config" class="hidden">
+            <div class="form-group">
+                <label for="dooray-api-key">Dooray API 키</label>
+                <input type="text" id="dooray-api-key" placeholder="dooray-api-xxxxx">
+                <p class="hint">
+                    <a href="https://nhnent.dooray.com" target="_blank">Dooray</a> →
+                    설정 → 개인 설정 → API 키 관리
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn" onclick="saveConfig()">🚀 설치 시작</button>
 
     <div class="success-modal" id="modal">
         <div class="modal-content">
@@ -299,66 +562,46 @@
             <p>설정 파일이 다운로드 폴더에 저장되었어요.</p>
             <p>Claude에게 아래와 같이 말해주세요:</p>
             <div class="code">"진행해줘"</div>
-            <p style="font-size: 13px; color: #86868b;">
-                또는 이 창을 닫고 Claude로 돌아가세요
-            </p>
         </div>
     </div>
 
     <script>
+        // 섹션 토글
+        function toggleSection(id) {
+            const section = document.getElementById('section-' + id);
+            const toggle = document.getElementById('toggle-' + id);
+            section.classList.toggle('collapsed');
+            toggle.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+        }
+
+        // 카테고리별 선택
+        function selectCategory(category, checked) {
+            document.querySelectorAll(`[data-category="${category}"]`).forEach(cb => {
+                cb.checked = checked;
+            });
+            updateFormVisibility();
+        }
+
         // 의존성 체크
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             cb.addEventListener('change', function() {
                 const requires = this.dataset.requires;
                 if (this.checked && requires) {
-                    // 의존성 자동 체크
                     const reqCb = document.querySelector(`[data-item="${requires}"]`);
                     if (reqCb && !reqCb.checked) {
                         reqCb.checked = true;
-                        showDepWarning(this, requires);
                     }
                 }
                 updateFormVisibility();
             });
         });
 
-        function showDepWarning(el, dep) {
-            const depName = {
-                'python': 'Python',
-                'git': 'Git 설정'
-            }[dep] || dep;
-
-            const warn = document.createElement('span');
-            warn.className = 'dep-warn';
-            warn.textContent = `(${depName} 자동 선택됨)`;
-            el.parentElement.parentElement.querySelector('td:nth-child(2)').appendChild(warn);
-            setTimeout(() => warn.remove(), 3000);
-        }
-
         function updateFormVisibility() {
-            const gitChecked = document.querySelector('[data-item="git"]').checked;
-            const mcpChecked = document.querySelector('[data-item="mcp"]').checked;
+            const gitChecked = document.querySelector('[data-item="git"]')?.checked;
+            const mcpDoorayChecked = document.querySelector('[data-item="mcp-dooray"]')?.checked;
 
             document.getElementById('git-config').classList.toggle('hidden', !gitChecked);
-            document.getElementById('mcp-config').classList.toggle('hidden', !mcpChecked);
-        }
-
-        function selectAll() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
-            updateFormVisibility();
-        }
-
-        function selectNone() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            updateFormVisibility();
-        }
-
-        function selectBasic() {
-            selectNone();
-            ['java', 'node', 'python', 'git', 'tools'].forEach(item => {
-                document.querySelector(`[data-item="${item}"]`).checked = true;
-            });
-            updateFormVisibility();
+            document.getElementById('mcp-config').classList.toggle('hidden', !mcpDoorayChecked);
         }
 
         function saveConfig() {
@@ -381,8 +624,8 @@
                 };
             }
 
-            // MCP 설정
-            if (config.items.mcp) {
+            // Dooray API 키
+            if (config.items['mcp-dooray']) {
                 config.settings.dooray = {
                     apiKey: document.getElementById('dooray-api-key').value
                 };
