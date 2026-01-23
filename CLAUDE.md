@@ -38,7 +38,8 @@ fi
 ```
 env/
 ├── CLAUDE.md              # ← 지금 읽고 있는 파일
-├── README.md              # 사람용 가이드 (3단계)
+├── README.md              # 사람용 가이드 (2단계)
+├── bootstrap.sh           # ★ 새 맥북용 시작점 (curl로 실행)
 ├── setup.sh               # 메인 설치 스크립트
 ├── configs/
 │   ├── shell/
@@ -48,8 +49,6 @@ env/
 │   │   └── gitconfig.template
 │   └── ssh/
 │       └── config.template
-├── claude/
-│   └── CLAUDE.md.template # 개인 CLAUDE.md 템플릿
 ├── mcp/
 │   └── .mcp.json.template # MCP 서버 설정 템플릿
 └── docs/
@@ -77,22 +76,37 @@ env/
 
 ## 사용자가 "새 Mac 설정해줘"라고 하면
 
-1. **아키텍처 확인**
-   ```bash
-   uname -m
-   ```
+### 중요: 새 맥북에는 git이 없음!
 
-2. **이 레포 클론**
-   ```bash
-   git clone git@github.com:zman-lab/env.git ~/env
-   ```
+새 맥북은 터미널만 있고 git, brew 등 아무것도 없습니다.
+**절대 `git clone`부터 시작하지 마세요.**
 
-3. **setup.sh 실행**
-   ```bash
-   cd ~/env && chmod +x setup.sh && ./setup.sh
-   ```
+### 안내할 명령어 (이것만 복사해서 주세요)
 
-4. **수동 단계 안내** (docs/manual-steps.md 참조)
+```bash
+curl -fsSL https://raw.githubusercontent.com/zman-lab/env/main/bootstrap.sh | bash
+```
+
+### 사용자에게 안내할 단계
+
+1. **터미널 열기**: `⌘ + Space` → "terminal" 입력 → Enter
+2. **위 명령어 복사해서 붙여넣기** 후 Enter
+3. **Xcode 설치 팝업 뜨면** → "설치" 버튼 클릭
+4. **설치 완료되면** → Enter 키 누르기
+5. **나머지는 자동**
+
+### bootstrap.sh가 하는 일
+
+1. Xcode Command Line Tools 설치 (git 포함)
+2. 이 레포지토리 clone (HTTPS, 인증 불필요)
+3. setup.sh 실행
+
+### 설치 완료 후 수동 단계
+
+docs/manual-steps.md 참조:
+- Java/Node/Python 버전 설치
+- Git 사용자 정보 설정
+- SSH 키 생성 및 GitHub 등록
 
 ## 트러블슈팅
 
