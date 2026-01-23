@@ -166,6 +166,14 @@
             color: #86868b;
             margin-left: 8px;
         }
+        .badge-required {
+            background: #34c759;
+            color: white;
+        }
+        .badge-recommended {
+            background: #ff9500;
+            color: white;
+        }
         .success-modal {
             display: none;
             position: fixed;
@@ -212,6 +220,48 @@
             padding: 16px 8px 8px;
             background: #fafafa;
         }
+        .mcp-config-group {
+            background: #f9f9fb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .mcp-config-group h4 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #1d1d1f;
+        }
+        .mcp-config-group .form-group {
+            margin-bottom: 12px;
+        }
+        .mcp-config-group .form-group:last-child {
+            margin-bottom: 0;
+        }
+        .inline-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+        }
+        .recommended-item {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+        }
+        .recommended-item td {
+            border-bottom-color: #ffe5b4;
+        }
+        .skill-preview {
+            font-size: 12px;
+            color: #86868b;
+            margin-top: 4px;
+        }
+        .auto-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 6px;
+        }
     </style>
 </head>
 <body>
@@ -221,7 +271,7 @@
     <!-- 기본 개발 도구 -->
     <div class="card">
         <h2 onclick="toggleSection('basic')">
-            기본 개발 도구 <span class="section-badge">필수</span>
+            기본 개발 도구 <span class="section-badge badge-required">필수</span>
             <span class="toggle" id="toggle-basic">▼</span>
         </h2>
         <div class="card-content" id="section-basic">
@@ -288,66 +338,27 @@
         </div>
     </div>
 
-    <!-- MCP 서버 -->
+    <!-- Anthropic 스킬 (통합) -->
     <div class="card">
-        <h2 onclick="toggleSection('mcp')">
-            MCP 서버 <span class="section-badge">9개</span>
-            <span class="toggle" id="toggle-mcp">▼</span>
+        <h2 onclick="toggleSection('anthropic')">
+            Anthropic 스킬 <span class="section-badge badge-recommended">강력 권장</span>
+            <span class="toggle" id="toggle-anthropic">▼</span>
         </h2>
-        <div class="card-content" id="section-mcp">
-            <div class="quick-select">
-                <button class="quick-btn" onclick="selectCategory('mcp', true)">전체 선택</button>
-                <button class="quick-btn" onclick="selectCategory('mcp', false)">전체 해제</button>
-            </div>
+        <div class="card-content" id="section-anthropic">
             <table>
                 <tbody>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-dooray" data-requires="python"></td>
-                        <td>dooray-mcp</td>
-                        <td class="desc">두레이 API 연동 <span class="dep">(→ Python)</span></td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-alpha"></td>
-                        <td>elasticsearch-alpha</td>
-                        <td class="desc">ES 알파 환경</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-real"></td>
-                        <td>elasticsearch-real</td>
-                        <td class="desc">ES 리얼 환경</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-alpha"></td>
-                        <td>mysql-alpha-game</td>
-                        <td class="desc">MySQL 알파 환경</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-dev"></td>
-                        <td>mysql-dev-game</td>
-                        <td class="desc">MySQL 개발 환경</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-real"></td>
-                        <td>mysql-real-game</td>
-                        <td class="desc">MySQL 리얼 환경</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-context7"></td>
-                        <td>context7</td>
-                        <td class="desc">라이브러리 문서 검색</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-pptx"></td>
-                        <td>pptx</td>
-                        <td class="desc">파워포인트 생성/편집</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="mcp" data-item="mcp-thinking"></td>
-                        <td>sequential-thinking</td>
-                        <td class="desc">순차적 사고 도우미</td>
+                    <tr class="recommended-item">
+                        <td><input type="checkbox" data-category="anthropic" data-item="anthropic-skills" checked></td>
+                        <td><strong>Anthropic 공식 스킬</strong> <span class="auto-badge">자동 업데이트</span></td>
+                        <td class="desc">문서/디자인/개발 도구 16종</td>
                     </tr>
                 </tbody>
             </table>
+            <div class="skill-preview" style="padding: 12px 8px;">
+                포함: /docx, /xlsx, /pptx, /pdf, /canvas-design, /frontend-design, /algorithmic-art, /brand-guidelines,
+                /theme-factory, /mcp-builder, /webapp-testing, /skill-creator, /web-artifacts-builder,
+                /internal-comms, /doc-coauthoring, /slack-gif-creator
+            </div>
         </div>
     </div>
 
@@ -427,102 +438,68 @@
         </div>
     </div>
 
-    <!-- Anthropic 스킬 -->
+    <!-- MCP 서버 -->
     <div class="card">
-        <h2 onclick="toggleSection('skill-anthropic')">
-            Anthropic 스킬 <span class="section-badge">16개</span>
-            <span class="toggle" id="toggle-skill-anthropic">▼</span>
+        <h2 onclick="toggleSection('mcp')">
+            MCP 서버 <span class="section-badge">9개</span>
+            <span class="toggle" id="toggle-mcp">▼</span>
         </h2>
-        <div class="card-content" id="section-skill-anthropic">
+        <div class="card-content" id="section-mcp">
             <div class="quick-select">
-                <button class="quick-btn" onclick="selectCategory('skill-anthropic', true)">전체 선택</button>
-                <button class="quick-btn" onclick="selectCategory('skill-anthropic', false)">전체 해제</button>
+                <button class="quick-btn" onclick="selectCategory('mcp', true)">전체 선택</button>
+                <button class="quick-btn" onclick="selectCategory('mcp', false)">전체 해제</button>
             </div>
             <table>
                 <tbody>
-                    <tr class="category"><td colspan="3">문서 도구</td></tr>
+                    <!-- 설정 필요 없는 MCP -->
+                    <tr class="category"><td colspan="3">설정 불필요 (자동 설치)</td></tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-docx"></td>
-                        <td>/docx</td>
-                        <td class="desc">Word 문서 생성/편집</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-context7"></td>
+                        <td>context7 <span class="auto-badge">npx</span></td>
+                        <td class="desc">라이브러리 문서 검색</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-xlsx"></td>
-                        <td>/xlsx</td>
-                        <td class="desc">Excel 파일 생성/편집</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-pptx"></td>
+                        <td>pptx <span class="auto-badge">uvx</span></td>
+                        <td class="desc">파워포인트 생성/편집</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-pptx"></td>
-                        <td>/pptx</td>
-                        <td class="desc">PowerPoint 생성/편집</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-thinking"></td>
+                        <td>sequential-thinking <span class="auto-badge">npx</span></td>
+                        <td class="desc">순차적 사고 도우미</td>
+                    </tr>
+
+                    <!-- 설정 필요한 MCP -->
+                    <tr class="category"><td colspan="3">설정 필요</td></tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-dooray" data-requires="python" data-config="dooray"></td>
+                        <td>dooray-mcp</td>
+                        <td class="desc">두레이 API 연동 <span class="dep">(→ Python)</span></td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-pdf"></td>
-                        <td>/pdf</td>
-                        <td class="desc">PDF 처리/분석</td>
-                    </tr>
-                    <tr class="category"><td colspan="3">디자인</td></tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-canvas"></td>
-                        <td>/canvas-design</td>
-                        <td class="desc">캔버스 기반 디자인</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-alpha" data-config="es-alpha"></td>
+                        <td>elasticsearch-alpha</td>
+                        <td class="desc">ES 알파 환경</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-frontend"></td>
-                        <td>/frontend-design</td>
-                        <td class="desc">프론트엔드 디자인</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-es-real" data-config="es-real"></td>
+                        <td>elasticsearch-real</td>
+                        <td class="desc">ES 리얼 환경 (인증 필요)</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-algorithmic"></td>
-                        <td>/algorithmic-art</td>
-                        <td class="desc">알고리즘 아트 생성</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-alpha" data-config="mysql-alpha"></td>
+                        <td>mysql-alpha-game</td>
+                        <td class="desc">MySQL 알파 환경</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-brand"></td>
-                        <td>/brand-guidelines</td>
-                        <td class="desc">브랜드 가이드라인</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-dev" data-config="mysql-dev"></td>
+                        <td>mysql-dev-game</td>
+                        <td class="desc">MySQL 개발 환경</td>
                     </tr>
                     <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-theme"></td>
-                        <td>/theme-factory</td>
-                        <td class="desc">테마 스타일링</td>
-                    </tr>
-                    <tr class="category"><td colspan="3">개발</td></tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-mcp-builder"></td>
-                        <td>/mcp-builder</td>
-                        <td class="desc">MCP 서버 개발 가이드</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-webapp"></td>
-                        <td>/webapp-testing</td>
-                        <td class="desc">웹앱 테스트 (Playwright)</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-creator"></td>
-                        <td>/skill-creator</td>
-                        <td class="desc">스킬 생성 가이드</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-web-artifacts"></td>
-                        <td>/web-artifacts-builder</td>
-                        <td class="desc">웹 아티팩트 빌드</td>
-                    </tr>
-                    <tr class="category"><td colspan="3">기타</td></tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-internal"></td>
-                        <td>/internal-comms</td>
-                        <td class="desc">내부 커뮤니케이션</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-doc-co"></td>
-                        <td>/doc-coauthoring</td>
-                        <td class="desc">문서 공동 작성</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" data-category="skill-anthropic" data-item="skill-slack-gif"></td>
-                        <td>/slack-gif-creator</td>
-                        <td class="desc">Slack GIF 생성</td>
+                        <td><input type="checkbox" data-category="mcp" data-item="mcp-mysql-real" data-config="mysql-real"></td>
+                        <td>mysql-real-game</td>
+                        <td class="desc">MySQL 리얼 환경</td>
                     </tr>
                 </tbody>
             </table>
@@ -532,25 +509,164 @@
     <!-- 설정 입력 -->
     <div class="card" id="config-section">
         <h2>설정 정보 입력</h2>
-        <div id="git-config">
-            <div class="form-group">
-                <label for="git-name">Git 이름</label>
-                <input type="text" id="git-name" placeholder="홍길동">
-            </div>
-            <div class="form-group">
-                <label for="git-email">Git 이메일</label>
-                <input type="email" id="git-email" placeholder="hong@example.com">
+
+        <!-- Git 설정 -->
+        <div id="config-git" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🔧 Git 설정</h4>
+                <div class="form-group">
+                    <label for="git-name">이름</label>
+                    <input type="text" id="git-name" placeholder="홍길동">
+                </div>
+                <div class="form-group">
+                    <label for="git-email">이메일</label>
+                    <input type="email" id="git-email" placeholder="hong@example.com">
+                </div>
             </div>
         </div>
-        <div id="mcp-config" class="hidden">
-            <div class="form-group">
-                <label for="dooray-api-key">Dooray API 키</label>
-                <input type="text" id="dooray-api-key" placeholder="dooray-api-xxxxx">
-                <p class="hint">
-                    <a href="https://nhnent.dooray.com" target="_blank">Dooray</a> →
-                    설정 → 개인 설정 → API 키 관리
-                </p>
+
+        <!-- Dooray MCP 설정 -->
+        <div id="config-dooray" class="hidden">
+            <div class="mcp-config-group">
+                <h4>📮 Dooray MCP</h4>
+                <div class="form-group">
+                    <label for="dooray-api-key">API 키</label>
+                    <input type="text" id="dooray-api-key" placeholder="dooray-api-xxxxx:xxxxxxx">
+                    <p class="hint">
+                        <a href="https://nhnent.dooray.com/settings/personal/api-key" target="_blank">Dooray</a> →
+                        설정 → 개인 설정 → API 키 관리
+                    </p>
+                </div>
             </div>
+        </div>
+
+        <!-- Elasticsearch Alpha 설정 -->
+        <div id="config-es-alpha" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🔍 Elasticsearch Alpha</h4>
+                <div class="form-group">
+                    <label for="es-alpha-host">Host URL</label>
+                    <input type="text" id="es-alpha-host" placeholder="http://10.162.0.209:9200">
+                </div>
+            </div>
+        </div>
+
+        <!-- Elasticsearch Real 설정 -->
+        <div id="config-es-real" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🔍 Elasticsearch Real</h4>
+                <div class="form-group">
+                    <label for="es-real-host">Host URL</label>
+                    <input type="text" id="es-real-host" placeholder="http://10.160.119.111:10910">
+                </div>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="es-real-user">Username</label>
+                        <input type="text" id="es-real-user" placeholder="poker">
+                    </div>
+                    <div class="form-group">
+                        <label for="es-real-pass">Password</label>
+                        <input type="password" id="es-real-pass" placeholder="••••••">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MySQL Alpha 설정 -->
+        <div id="config-mysql-alpha" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🗄️ MySQL Alpha</h4>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-alpha-host">Host</label>
+                        <input type="text" id="mysql-alpha-host" placeholder="10.162.5.51">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-alpha-port">Port</label>
+                        <input type="text" id="mysql-alpha-port" placeholder="13306">
+                    </div>
+                </div>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-alpha-user">User</label>
+                        <input type="text" id="mysql-alpha-user" placeholder="HCARDP_GAME2">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-alpha-pass">Password</label>
+                        <input type="password" id="mysql-alpha-pass" placeholder="••••••">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mysql-alpha-db">Database</label>
+                    <input type="text" id="mysql-alpha-db" placeholder="hcardp_game">
+                </div>
+            </div>
+        </div>
+
+        <!-- MySQL Dev 설정 -->
+        <div id="config-mysql-dev" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🗄️ MySQL Dev</h4>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-dev-host">Host</label>
+                        <input type="text" id="mysql-dev-host" placeholder="10.162.5.170">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-dev-port">Port</label>
+                        <input type="text" id="mysql-dev-port" placeholder="13306">
+                    </div>
+                </div>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-dev-user">User</label>
+                        <input type="text" id="mysql-dev-user" placeholder="HCARDP_GAME2">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-dev-pass">Password</label>
+                        <input type="password" id="mysql-dev-pass" placeholder="••••••">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mysql-dev-db">Database</label>
+                    <input type="text" id="mysql-dev-db" placeholder="hcardp_game">
+                </div>
+            </div>
+        </div>
+
+        <!-- MySQL Real 설정 -->
+        <div id="config-mysql-real" class="hidden">
+            <div class="mcp-config-group">
+                <h4>🗄️ MySQL Real</h4>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-real-host">Host</label>
+                        <input type="text" id="mysql-real-host" placeholder="10.170.53.42">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-real-port">Port</label>
+                        <input type="text" id="mysql-real-port" placeholder="13306">
+                    </div>
+                </div>
+                <div class="inline-inputs">
+                    <div class="form-group">
+                        <label for="mysql-real-user">User</label>
+                        <input type="text" id="mysql-real-user" placeholder="sqlgw">
+                    </div>
+                    <div class="form-group">
+                        <label for="mysql-real-pass">Password</label>
+                        <input type="password" id="mysql-real-pass" placeholder="••••••">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mysql-real-db">Database</label>
+                    <input type="text" id="mysql-real-db" placeholder="hcardp_game">
+                </div>
+            </div>
+        </div>
+
+        <div id="no-config-message" style="color: #86868b; font-size: 14px; padding: 8px;">
+            선택한 항목에 필요한 설정이 없습니다.
         </div>
     </div>
 
@@ -570,8 +686,10 @@
         function toggleSection(id) {
             const section = document.getElementById('section-' + id);
             const toggle = document.getElementById('toggle-' + id);
-            section.classList.toggle('collapsed');
-            toggle.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+            if (section && toggle) {
+                section.classList.toggle('collapsed');
+                toggle.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+            }
         }
 
         // 카테고리별 선택
@@ -598,10 +716,26 @@
 
         function updateFormVisibility() {
             const gitChecked = document.querySelector('[data-item="git"]')?.checked;
-            const mcpDoorayChecked = document.querySelector('[data-item="mcp-dooray"]')?.checked;
 
-            document.getElementById('git-config').classList.toggle('hidden', !gitChecked);
-            document.getElementById('mcp-config').classList.toggle('hidden', !mcpDoorayChecked);
+            // Git 설정
+            document.getElementById('config-git').classList.toggle('hidden', !gitChecked);
+
+            // MCP 설정들
+            const mcpConfigs = ['dooray', 'es-alpha', 'es-real', 'mysql-alpha', 'mysql-dev', 'mysql-real'];
+            let anyConfigVisible = gitChecked;
+
+            mcpConfigs.forEach(config => {
+                const checkbox = document.querySelector(`[data-config="${config}"]`);
+                const configDiv = document.getElementById('config-' + config);
+                if (checkbox && configDiv) {
+                    const isChecked = checkbox.checked;
+                    configDiv.classList.toggle('hidden', !isChecked);
+                    if (isChecked) anyConfigVisible = true;
+                }
+            });
+
+            // "설정 없음" 메시지
+            document.getElementById('no-config-message').classList.toggle('hidden', anyConfigVisible);
         }
 
         function saveConfig() {
@@ -624,10 +758,59 @@
                 };
             }
 
-            // Dooray API 키
+            // Dooray 설정
             if (config.items['mcp-dooray']) {
                 config.settings.dooray = {
                     apiKey: document.getElementById('dooray-api-key').value
+                };
+            }
+
+            // Elasticsearch Alpha 설정
+            if (config.items['mcp-es-alpha']) {
+                config.settings['es-alpha'] = {
+                    host: document.getElementById('es-alpha-host').value
+                };
+            }
+
+            // Elasticsearch Real 설정
+            if (config.items['mcp-es-real']) {
+                config.settings['es-real'] = {
+                    host: document.getElementById('es-real-host').value,
+                    username: document.getElementById('es-real-user').value,
+                    password: document.getElementById('es-real-pass').value
+                };
+            }
+
+            // MySQL Alpha 설정
+            if (config.items['mcp-mysql-alpha']) {
+                config.settings['mysql-alpha'] = {
+                    host: document.getElementById('mysql-alpha-host').value,
+                    port: document.getElementById('mysql-alpha-port').value,
+                    user: document.getElementById('mysql-alpha-user').value,
+                    password: document.getElementById('mysql-alpha-pass').value,
+                    database: document.getElementById('mysql-alpha-db').value
+                };
+            }
+
+            // MySQL Dev 설정
+            if (config.items['mcp-mysql-dev']) {
+                config.settings['mysql-dev'] = {
+                    host: document.getElementById('mysql-dev-host').value,
+                    port: document.getElementById('mysql-dev-port').value,
+                    user: document.getElementById('mysql-dev-user').value,
+                    password: document.getElementById('mysql-dev-pass').value,
+                    database: document.getElementById('mysql-dev-db').value
+                };
+            }
+
+            // MySQL Real 설정
+            if (config.items['mcp-mysql-real']) {
+                config.settings['mysql-real'] = {
+                    host: document.getElementById('mysql-real-host').value,
+                    port: document.getElementById('mysql-real-port').value,
+                    user: document.getElementById('mysql-real-user').value,
+                    password: document.getElementById('mysql-real-pass').value,
+                    database: document.getElementById('mysql-real-db').value
                 };
             }
 

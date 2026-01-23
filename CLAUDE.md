@@ -32,7 +32,7 @@ open ~/env/web/setup.html
 
 웹 페이지에서:
 1. 설치할 항목 체크
-2. 필요한 정보 입력 (Git 이름, 이메일 등)
+2. 필요한 정보 입력 (Git 이름, 이메일, MCP 접속 정보 등)
 3. "설치 시작" 버튼 클릭
 
 완료되면 "진행해줘"라고 말해주세요.
@@ -55,11 +55,20 @@ config.json 구조:
     "java": true,
     "node": true,
     "python": false,
+    "anthropic-skills": true,
+    "mcp-dooray": true,
+    "mcp-es-alpha": true,
+    "mcp-mysql-alpha": true,
     ...
   },
   "settings": {
     "git": { "name": "...", "email": "..." },
-    "dooray": { "apiKey": "..." }
+    "dooray": { "apiKey": "..." },
+    "es-alpha": { "host": "..." },
+    "es-real": { "host": "...", "username": "...", "password": "..." },
+    "mysql-alpha": { "host": "...", "port": "...", "user": "...", "password": "...", "database": "..." },
+    "mysql-dev": { ... },
+    "mysql-real": { ... }
   }
 }
 ```
@@ -122,19 +131,114 @@ cat ~/.ssh/id_ed25519.pub
 ```
 공개키 출력 후 GitHub 등록 안내
 
-### mcp (Dooray MCP)
+### tools
+```bash
+brew install bat fzf ripgrep jq tree lsd
+```
+lsd 실패 시 `brew install eza`로 대체
+
+---
+
+## Anthropic 스킬 설치 (anthropic-skills)
+
+**강력 권장 항목** - GitHub에서 최신 버전을 받아 전역 설치:
+
+```bash
+# 스킬 레포 클론/업데이트
+if [ -d ~/anthropic-skills ]; then
+    cd ~/anthropic-skills && git pull origin main
+else
+    git clone https://github.com/anthropics/skills.git ~/anthropic-skills
+fi
+
+# Claude 설정에 추가
+mkdir -p ~/.claude
+```
+
+~/.claude/settings.json에 commands 경로 추가:
+```json
+{
+  "commands": [
+    "~/anthropic-skills/skills"
+  ]
+}
+```
+
+포함 스킬: /docx, /xlsx, /pptx, /pdf, /canvas-design, /frontend-design, /algorithmic-art, /brand-guidelines, /theme-factory, /mcp-builder, /webapp-testing, /skill-creator, /web-artifacts-builder, /internal-comms, /doc-coauthoring, /slack-gif-creator
+
+---
+
+## 커스텀 스킬 설치
+
+```bash
+# init 레포 클론
+[ ! -d ~/init ] && git clone https://github.com/zman-lab/init.git ~/init
+```
+
+~/.claude/settings.json에 commands 경로 추가:
+```json
+{
+  "commands": [
+    "~/init/claude/commands",
+    "~/anthropic-skills/skills"
+  ]
+}
+```
+
+---
+
+## MCP 서버 설치
+
+### 설정 불필요 (자동 설치)
+
+#### mcp-context7
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
+#### mcp-pptx
+```json
+{
+  "mcpServers": {
+    "pptx": {
+      "command": "uvx",
+      "args": ["--from", "office-powerpoint-mcp-server", "ppt_mcp_server"]
+    }
+  }
+}
+```
+
+#### mcp-thinking
+```json
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  }
+}
+```
+
+### 설정 필요
+
+#### mcp-dooray (Dooray MCP)
 ```bash
 # init 레포 클론
 [ ! -d ~/init ] && git clone https://github.com/zman-lab/init.git ~/init
 
 # 의존성 설치
 cd ~/init/mcp/dooray-mcp && uv sync
-
-# Claude 설정
-mkdir -p ~/.claude
 ```
 
-~/.claude/settings.json에 MCP 서버 설정 추가:
+settings.json:
 ```json
 {
   "mcpServers": {
@@ -142,25 +246,96 @@ mkdir -p ~/.claude
       "command": "~/init/mcp/dooray-mcp/.venv/bin/python",
       "args": ["~/init/mcp/dooray-mcp/main.py"],
       "env": {
-        "DOORAY_API_KEY": "API키"
+        "DOORAY_API_KEY": "{settings.dooray.apiKey}",
+        "DOORAY_BASE_URL": "https://api.dooray.com"
       }
     }
   }
 }
 ```
 
-### skills (Claude 스킬)
+#### mcp-es-alpha (Elasticsearch Alpha)
 ```bash
-[ ! -d ~/init ] && git clone https://github.com/zman-lab/init.git ~/init
+# elasticsearch-mcp-server 설치
+uv tool install elasticsearch-mcp-server
 ```
 
-~/.claude/settings.json에 commands 경로 추가
-
-### tools
-```bash
-brew install bat fzf ripgrep jq tree lsd
+settings.json:
+```json
+{
+  "mcpServers": {
+    "elasticsearch-alpha": {
+      "command": "~/.local/bin/elasticsearch-mcp-server",
+      "args": [],
+      "env": {
+        "ELASTICSEARCH_HOST": "{settings.es-alpha.host}"
+      }
+    }
+  }
+}
 ```
-lsd 실패 시 `brew install eza`로 대체
+
+#### mcp-es-real (Elasticsearch Real)
+```bash
+uv tool install elasticsearch-mcp-server
+```
+
+settings.json:
+```json
+{
+  "mcpServers": {
+    "elasticsearch-real": {
+      "command": "~/.local/bin/elasticsearch-mcp-server",
+      "args": [],
+      "env": {
+        "ELASTICSEARCH_HOST": "{settings.es-real.host}",
+        "ELASTICSEARCH_USERNAME": "{settings.es-real.username}",
+        "ELASTICSEARCH_PASSWORD": "{settings.es-real.password}"
+      }
+    }
+  }
+}
+```
+
+#### mcp-mysql-* (MySQL)
+```bash
+# mysql-mcp-server 설치
+uv tool install mysql-mcp-server
+```
+
+settings.json (mysql-alpha 예시):
+```json
+{
+  "mcpServers": {
+    "mysql-alpha-game": {
+      "command": "~/.local/bin/mysql_mcp_server",
+      "args": [],
+      "env": {
+        "MYSQL_HOST": "{settings.mysql-alpha.host}",
+        "MYSQL_PORT": "{settings.mysql-alpha.port}",
+        "MYSQL_USER": "{settings.mysql-alpha.user}",
+        "MYSQL_PASSWORD": "{settings.mysql-alpha.password}",
+        "MYSQL_DATABASE": "{settings.mysql-alpha.database}"
+      }
+    }
+  }
+}
+```
+
+mysql-dev, mysql-real도 동일한 방식으로 설정 (settings에서 값 참조)
+
+---
+
+## settings.json 병합 전략
+
+기존 ~/.claude/settings.json이 있으면:
+1. 기존 파일 읽기
+2. mcpServers, commands 배열에 새 항목 추가 (중복 방지)
+3. 기존 설정 유지
+
+없으면 새로 생성.
+
+---
 
 ## 에러 처리
 
