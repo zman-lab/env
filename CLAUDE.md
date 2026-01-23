@@ -139,29 +139,47 @@ lsd 실패 시 `brew install eza`로 대체
 
 ---
 
+## 스킬 설치 구조
+
+**핵심 구조:**
+```
+~/.claude/commands/ → ~/init/claude/commands/ (심볼릭 링크)
+
+~/init/claude/commands/
+├── do.md, wiki.md, build-*.md  (커스텀 스킬 - git 관리)
+├── docx.md → ~/anthropic-skills/skills/docx/SKILL.md (Anthropic 스킬 링크)
+└── ...
+```
+
+**장점:**
+- `~/init` push/pull → 커스텀 스킬 동기화
+- `~/anthropic-skills` pull → Anthropic 스킬 업데이트
+
+---
+
 ## Anthropic 스킬 설치 (anthropic-skills)
 
-**강력 권장 항목** - GitHub에서 최신 버전을 받아 전역 설치:
+**강력 권장 항목** - GitHub에서 최신 버전 설치:
 
 ```bash
-# 스킬 레포 클론/업데이트
+# Anthropic 스킬 레포 클론/업데이트
 if [ -d ~/anthropic-skills ]; then
     cd ~/anthropic-skills && git pull origin main
 else
     git clone https://github.com/anthropics/skills.git ~/anthropic-skills
 fi
-
-# Claude 설정에 추가
-mkdir -p ~/.claude
 ```
 
-~/.claude/settings.json에 commands 경로 추가:
-```json
-{
-  "commands": [
-    "~/anthropic-skills/skills"
-  ]
-}
+그 다음 ~/init/claude/commands/에 심볼릭 링크 생성:
+```bash
+cd ~/init/claude/commands
+
+# Anthropic 스킬 심볼릭 링크 생성
+for skill in docx xlsx pptx pdf canvas-design frontend-design algorithmic-art \
+             brand-guidelines theme-factory mcp-builder webapp-testing \
+             skill-creator web-artifacts-builder internal-comms doc-coauthoring slack-gif-creator; do
+    [ -f "$skill.md" ] || ln -s ~/anthropic-skills/skills/$skill/SKILL.md $skill.md
+done
 ```
 
 포함 스킬: /docx, /xlsx, /pptx, /pdf, /canvas-design, /frontend-design, /algorithmic-art, /brand-guidelines, /theme-factory, /mcp-builder, /webapp-testing, /skill-creator, /web-artifacts-builder, /internal-comms, /doc-coauthoring, /slack-gif-creator
@@ -171,18 +189,14 @@ mkdir -p ~/.claude
 ## 커스텀 스킬 설치
 
 ```bash
-# init 레포 클론
+# init 레포 클론 (커스텀 스킬 + MCP 포함)
 [ ! -d ~/init ] && git clone https://github.com/zman-lab/init.git ~/init
+
+# ~/.claude/commands를 ~/init/claude/commands로 심볼릭 링크
+mkdir -p ~/.claude
+[ -L ~/.claude/commands ] || ln -s ~/init/claude/commands ~/.claude/commands
 ```
 
-~/.claude/settings.json에 commands 경로 추가:
-```json
-{
-  "commands": [
-    "~/init/claude/commands",
-    "~/anthropic-skills/skills"
-  ]
-}
 ```
 
 ---
