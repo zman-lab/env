@@ -88,10 +88,16 @@ fi
 ```
 
 ### java
+**Java 11 + 17 둘 다 필요** (hangame-poker-server는 11, GIA/betting_base는 17)
+
 ```bash
 curl -s "https://get.sdkman.io?rcupdate=false" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Zulu JDK (무료, 상용 가능)
+sdk install java 11.0.25-zulu
 sdk install java 17.0.13-zulu
+sdk default java 17.0.13-zulu
 ```
 
 ### node
