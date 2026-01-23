@@ -1,62 +1,63 @@
 # Mac 개발 환경 설정
 
-새 맥북 샀을 때 개발 환경 **원클릭** 자동 설정.
+새 맥북에서 개발 환경 **원클릭** 자동 설정.
 
 ## 설정 방법
 
-### 1단계: 터미널 열기
+### 1. 터미널 열기
 
-키보드에서 `⌘ + Space` 누르고 → `terminal` 입력 → Enter
+`⌘ + Space` → `terminal` 입력 → Enter
 
-### 2단계: 아래 명령어 복사해서 붙여넣기
+### 2. 아래 명령어 복사해서 붙여넣기
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zman-lab/env/main/bootstrap.sh | bash
 ```
 
-**끝!** Java, Node.js, Python까지 전부 자동으로 설치됩니다.
+### 3. Claude 실행
 
----
-
-## 진행 중 할 일
-
-1. **Xcode 설치 팝업** → "설치" 버튼 클릭
-2. 설치 끝나면 → Enter 키 누르기
-3. 나머지는 **전부 자동** (10~20분 소요)
-
----
-
-## 자동으로 설치되는 것
-
-| 도구 | 버전 | 용도 |
-|------|------|------|
-| Homebrew | 최신 | Mac 패키지 관리자 |
-| Java | 17 (Zulu) | JVM 개발 |
-| Node.js | 20 LTS | JavaScript 런타임 |
-| Python | 3.12 | Python 개발 |
-| 기타 | - | git, bat, fzf, ripgrep, jq 등 |
-
----
-
-## 설치 완료 후 (수동)
-
-터미널 닫고 다시 연 뒤:
-
-### 1. Git 사용자 정보 설정
 ```bash
-git config --global user.name "내 이름"
-git config --global user.email "my@email.com"
+claude
 ```
 
-### 2. GitHub SSH 키 등록 (선택)
-```bash
-ssh-keygen -t ed25519 -C "my@email.com"
-cat ~/.ssh/id_ed25519.pub | pbcopy
+### 4. Claude에게 말하기
+
 ```
-→ https://github.com/settings/keys 에서 등록
+/install-devenv
+```
+
+### 5. 웹에서 선택하면 끝!
+
+Claude가 웹 페이지를 열어줍니다. 원하는 항목 체크하고 "설치 시작" 누르면 자동 설치!
+
+---
+
+## 부트스트랩에서 설치되는 것
+
+| 도구 | 용도 |
+|------|------|
+| Xcode CLI | 기본 개발 도구 |
+| Homebrew | 패키지 관리자 |
+| Node.js | Claude Code 실행용 |
+| Claude Code | AI 개발 도우미 |
+
+## /install-devenv에서 선택 가능한 것
+
+| 항목 | 설명 |
+|------|------|
+| Java 17 | SDKMAN + Zulu JDK |
+| Node.js 20 | nvm + LTS |
+| Python 3.12 | pyenv |
+| Git 설정 | 이름, 이메일 |
+| SSH 키 | GitHub 연동 |
+| Dooray MCP | 두레이 API 연동 |
+| Claude 스킬 | /do, /wiki 등 |
+| 기타 도구 | bat, fzf, ripgrep 등 |
 
 ---
 
 ## 문제가 생기면?
 
-[docs/troubleshooting.md](docs/troubleshooting.md) 참고
+Claude에게 물어보세요. 에러가 나도 Claude가 해결해줍니다.
+
+또는 [docs/troubleshooting.md](docs/troubleshooting.md) 참고
