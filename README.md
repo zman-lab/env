@@ -1,8 +1,8 @@
 # Mac 개발 환경 설정
 
-새 맥북 샀을 때 개발 환경 자동 설정.
+새 맥북 샀을 때 개발 환경 **원클릭** 자동 설정.
 
-## 설정 방법 (2단계)
+## 설정 방법
 
 ### 1단계: 터미널 열기
 
@@ -14,10 +14,7 @@
 curl -fsSL https://raw.githubusercontent.com/zman-lab/env/main/bootstrap.sh | bash
 ```
 
-> 복사: 위 명령어 드래그 후 `⌘ + C`
-> 붙여넣기: 터미널에서 `⌘ + V` 후 Enter
-
-**끝!** 나머지는 자동으로 진행됩니다.
+**끝!** Java, Node.js, Python까지 전부 자동으로 설치됩니다.
 
 ---
 
@@ -25,37 +22,38 @@ curl -fsSL https://raw.githubusercontent.com/zman-lab/env/main/bootstrap.sh | ba
 
 1. **Xcode 설치 팝업** → "설치" 버튼 클릭
 2. 설치 끝나면 → Enter 키 누르기
-3. 나머지는 자동
+3. 나머지는 **전부 자동** (10~20분 소요)
 
 ---
 
-## 설치 완료 후
+## 자동으로 설치되는 것
 
-터미널 닫고 다시 열기, 그 다음:
+| 도구 | 버전 | 용도 |
+|------|------|------|
+| Homebrew | 최신 | Mac 패키지 관리자 |
+| Java | 17 (Zulu) | JVM 개발 |
+| Node.js | 20 LTS | JavaScript 런타임 |
+| Python | 3.12 | Python 개발 |
+| 기타 | - | git, bat, fzf, ripgrep, jq 등 |
 
+---
+
+## 설치 완료 후 (수동)
+
+터미널 닫고 다시 연 뒤:
+
+### 1. Git 사용자 정보 설정
 ```bash
-# Java 설치
-sdk install java 17.0.9-zulu
-
-# Node.js 설치
-nvm install 20
-
-# Python 설치
-pyenv install 3.12.0
+git config --global user.name "내 이름"
+git config --global user.email "my@email.com"
 ```
 
----
-
-## 뭐가 설치되나요?
-
-| 도구 | 용도 |
-|------|------|
-| Homebrew | Mac 패키지 관리자 |
-| git | 코드 버전 관리 |
-| SDKMAN | Java 버전 관리 |
-| nvm | Node.js 버전 관리 |
-| pyenv | Python 버전 관리 |
-| 기타 | bat, fzf, ripgrep, jq 등 |
+### 2. GitHub SSH 키 등록 (선택)
+```bash
+ssh-keygen -t ed25519 -C "my@email.com"
+cat ~/.ssh/id_ed25519.pub | pbcopy
+```
+→ https://github.com/settings/keys 에서 등록
 
 ---
 

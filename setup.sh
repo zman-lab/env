@@ -2,6 +2,7 @@
 #
 # Mac 개발 환경 설정 스크립트
 # Apple Silicon / Intel Mac 자동 감지
+# Java, Node.js, Python까지 전부 자동 설치
 #
 # 사용법: ./setup.sh
 #
@@ -75,7 +76,12 @@ install_xcode_cli() {
         xcode-select --install
 
         # 설치 완료 대기
-        echo "설치가 완료되면 Enter를 눌러주세요..."
+        echo ""
+        echo "============================================"
+        echo "  팝업 창에서 '설치' 버튼을 클릭하세요!"
+        echo "  설치가 완료되면 Enter를 눌러주세요."
+        echo "============================================"
+        echo ""
         read -r
 
         if xcode-select -p &>/dev/null; then
@@ -97,7 +103,7 @@ install_homebrew() {
         log_success "Homebrew 이미 설치됨: $(brew --version | head -1)"
     else
         log_info "Homebrew 설치 중..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
         # PATH에 추가 (현재 세션)
         eval "$($BREW_PREFIX/bin/brew shellenv)"
@@ -109,6 +115,9 @@ install_homebrew() {
             exit 1
         fi
     fi
+
+    # 현재 세션에서 brew 사용 가능하게
+    eval "$($BREW_PREFIX/bin/brew shellenv)"
 }
 
 # ============================================================
@@ -132,13 +141,12 @@ install_base_packages() {
         unzip
     )
 
-    # lsd는 Intel Mac에서 문제될 수 있어서 별도 처리
     for pkg in "${PACKAGES[@]}"; do
         if brew list "$pkg" &>/dev/null; then
             log_info "  $pkg: 이미 설치됨"
         else
             log_info "  $pkg: 설치 중..."
-            if brew install "$pkg"; then
+            if brew install "$pkg" 2>/dev/null; then
                 log_success "  $pkg: 설치 완료"
             else
                 log_warn "  $pkg: 설치 실패 (계속 진행)"
@@ -153,7 +161,7 @@ install_base_packages() {
             log_success "  lsd: 설치 완료"
         else
             log_warn "  lsd: 설치 실패, eza로 대체 설치"
-            brew install eza || log_warn "  eza도 설치 실패"
+            brew install eza 2>/dev/null || log_warn "  eza도 설치 실패"
         fi
     else
         log_info "  lsd: 이미 설치됨"
@@ -163,70 +171,118 @@ install_base_packages() {
 }
 
 # ============================================================
-# SDKMAN 설치 (Java 버전 관리)
+# SDKMAN + Java 설치
 # ============================================================
-install_sdkman() {
+install_sdkman_and_java() {
     log_info "SDKMAN 확인 중..."
 
-    if [ -d "$HOME/.sdkman" ]; then
+    export SDKMAN_DIR="$HOME/.sdkman"
+
+    if [ -d "$SDKMAN_DIR" ]; then
         log_success "SDKMAN 이미 설치됨"
     else
         log_info "SDKMAN 설치 중..."
-        curl -s "https://get.sdkman.io" | bash
+        curl -s "https://get.sdkman.io?rcupdate=false" | bash
 
-        if [ -d "$HOME/.sdkman" ]; then
-            log_success "SDKMAN 설치 완료"
-            log_info "Java 설치는 새 터미널에서: sdk install java 17.0.9-zulu"
-        else
+        if [ ! -d "$SDKMAN_DIR" ]; then
             log_error "SDKMAN 설치 실패"
+            return 1
         fi
+        log_success "SDKMAN 설치 완료"
+    fi
+
+    # SDKMAN 로드
+    if [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+        source "$SDKMAN_DIR/bin/sdkman-init.sh"
+    fi
+
+    # Java 17 설치
+    log_info "Java 17 설치 중... (시간이 좀 걸립니다)"
+    if sdk list java 2>/dev/null | grep -q "17.0.*-zulu.*installed"; then
+        log_success "Java 17 이미 설치됨"
+    else
+        # 자동으로 yes 입력
+        echo "Y" | sdk install java 17.0.13-zulu 2>/dev/null || sdk install java 17.0.13-zulu
+        log_success "Java 17 설치 완료"
     fi
 }
 
 # ============================================================
-# nvm 설치 (Node.js 버전 관리)
+# nvm + Node.js 설치
 # ============================================================
-install_nvm() {
+install_nvm_and_node() {
     log_info "nvm 확인 중..."
 
-    if [ -d "$HOME/.nvm" ]; then
+    export NVM_DIR="$HOME/.nvm"
+
+    if [ -d "$NVM_DIR" ]; then
         log_success "nvm 이미 설치됨"
     else
         log_info "nvm 설치 중..."
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
-        if [ -d "$HOME/.nvm" ]; then
-            log_success "nvm 설치 완료"
-            log_info "Node.js 설치는 새 터미널에서: nvm install 20"
-        else
+        if [ ! -d "$NVM_DIR" ]; then
             log_error "nvm 설치 실패"
+            return 1
         fi
+        log_success "nvm 설치 완료"
+    fi
+
+    # nvm 로드
+    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+    # Node.js 20 LTS 설치
+    log_info "Node.js 20 LTS 설치 중..."
+    if nvm list 2>/dev/null | grep -q "v20"; then
+        log_success "Node.js 20 이미 설치됨"
+    else
+        nvm install 20
+        nvm alias default 20
+        log_success "Node.js 20 설치 완료"
     fi
 }
 
 # ============================================================
-# pyenv 설치 (Python 버전 관리)
+# pyenv + Python 설치
 # ============================================================
-install_pyenv() {
+install_pyenv_and_python() {
     log_info "pyenv 확인 중..."
 
-    if command -v pyenv &>/dev/null || [ -d "$HOME/.pyenv" ]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+
+    if brew list pyenv &>/dev/null || [ -d "$PYENV_ROOT" ]; then
         log_success "pyenv 이미 설치됨"
     else
         log_info "pyenv 설치 중..."
         brew install pyenv pyenv-virtualenv
 
-        if brew list pyenv &>/dev/null; then
-            log_success "pyenv 설치 완료"
-            log_info "Python 설치는 새 터미널에서: pyenv install 3.12.0"
-        else
+        if ! brew list pyenv &>/dev/null; then
             log_error "pyenv 설치 실패"
+            return 1
         fi
+        log_success "pyenv 설치 완료"
+    fi
+
+    # pyenv 로드
+    eval "$(pyenv init -)" 2>/dev/null || true
+
+    # Python 3.12 설치
+    log_info "Python 3.12 설치 중... (빌드에 시간이 좀 걸립니다)"
+    if pyenv versions 2>/dev/null | grep -q "3.12"; then
+        log_success "Python 3.12 이미 설치됨"
+    else
+        # 빌드 의존성 설치
+        brew install openssl readline sqlite3 xz zlib tcl-tk 2>/dev/null || true
+
+        pyenv install 3.12.0
+        pyenv global 3.12.0
+        log_success "Python 3.12 설치 완료"
     fi
 }
 
 # ============================================================
-# uv 설치 (Python 패키지 관리 - pip 대체)
+# uv 설치 (Python 패키지 관리)
 # ============================================================
 install_uv() {
     log_info "uv 확인 중..."
@@ -237,7 +293,6 @@ install_uv() {
         log_info "uv 설치 중..."
         curl -LsSf https://astral.sh/uv/install.sh | sh
 
-        # PATH 업데이트
         export PATH="$HOME/.local/bin:$PATH"
 
         if command -v uv &>/dev/null; then
@@ -308,6 +363,7 @@ main() {
     echo ""
     echo "=========================================="
     echo "  Mac 개발 환경 설정 스크립트"
+    echo "  (Java, Node.js, Python 자동 설치)"
     echo "=========================================="
     echo ""
 
@@ -327,13 +383,13 @@ main() {
     install_base_packages
     echo ""
 
-    install_sdkman
+    install_sdkman_and_java
     echo ""
 
-    install_nvm
+    install_nvm_and_node
     echo ""
 
-    install_pyenv
+    install_pyenv_and_python
     echo ""
 
     install_uv
@@ -346,13 +402,15 @@ main() {
     echo -e "${GREEN}  설정 완료!${NC}"
     echo "=========================================="
     echo ""
-    echo "다음 단계 (수동):"
-    echo "  1. 새 터미널 열기 (설정 적용)"
-    echo "  2. Java 설치: sdk install java 17.0.9-zulu"
-    echo "  3. Node.js 설치: nvm install 20"
-    echo "  4. Python 설치: pyenv install 3.12.0"
-    echo "  5. GitHub SSH 키 등록"
-    echo "  6. docs/manual-steps.md 참조"
+    echo "설치된 버전:"
+    echo "  - Java: $(java -version 2>&1 | head -1 || echo '새 터미널에서 확인')"
+    echo "  - Node: $(node -v 2>/dev/null || echo '새 터미널에서 확인')"
+    echo "  - Python: $(python --version 2>/dev/null || echo '새 터미널에서 확인')"
+    echo ""
+    echo "남은 작업 (수동):"
+    echo "  1. 터미널 닫고 다시 열기"
+    echo "  2. ~/.gitconfig에서 name, email 수정"
+    echo "  3. GitHub SSH 키 등록 (docs/manual-steps.md 참조)"
     echo ""
     echo "로그 파일: $LOG_FILE"
     echo ""
