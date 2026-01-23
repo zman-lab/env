@@ -94,10 +94,10 @@ fi
 curl -s "https://get.sdkman.io?rcupdate=false" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-# Zulu JDK (무료, 상용 가능)
-sdk install java 11.0.25-zulu
-sdk install java 17.0.13-zulu
-sdk default java 17.0.13-zulu
+# Eclipse Temurin (무료, 상용 가능)
+sdk install java 11.0.25-tem
+sdk install java 17.0.13-tem
+sdk default java 17.0.13-tem
 ```
 
 ### node
