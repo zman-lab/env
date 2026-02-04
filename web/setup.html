@@ -367,7 +367,7 @@
     <!-- 커스텀 스킬 -->
     <div class="card">
         <h2 onclick="toggleSection('skill-custom')">
-            커스텀 스킬 <span class="section-badge">13개</span>
+            커스텀 스킬 <span class="section-badge">15개</span>
             <span class="toggle" id="toggle-skill-custom">▼</span>
         </h2>
         <div class="card-content" id="section-skill-custom">
@@ -434,6 +434,16 @@
                         <td><input type="checkbox" data-category="skill-custom" data-item="skill-sync-gamedata"></td>
                         <td>/sync-gamedata</td>
                         <td class="desc">GameData Zone 동기화</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-sync-branches"></td>
+                        <td>/sync-branches</td>
+                        <td class="desc">브랜치 최신화 (alpha/develop merge)</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-commit"></td>
+                        <td>/commit</td>
+                        <td class="desc">Git 커밋 스킬</td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" data-category="skill-custom" data-item="skill-ut"></td>
@@ -711,7 +721,7 @@
         const skillsRequiringSsh = [
             'skill-do', 'skill-wiki', 'skill-dooray-task', 'skill-weekly-report',
             'skill-day-work', 'skill-build-all', 'skill-build-poker', 'skill-build-gia',
-            'skill-build-betting', 'skill-hps-run', 'skill-sync-gamedata'
+            'skill-build-betting', 'skill-hps-run', 'skill-sync-gamedata', 'skill-sync-branches', 'skill-commit'
         ];
 
         // 의존성 체크
