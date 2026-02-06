@@ -367,7 +367,7 @@
     <!-- 커스텀 스킬 -->
     <div class="card">
         <h2 onclick="toggleSection('skill-custom')">
-            커스텀 스킬 <span class="section-badge">15개</span>
+            커스텀 스킬 <span class="section-badge">16개</span>
             <span class="toggle" id="toggle-skill-custom">▼</span>
         </h2>
         <div class="card-content" id="section-skill-custom">
@@ -439,6 +439,11 @@
                         <td><input type="checkbox" data-category="skill-custom" data-item="skill-sync-branches"></td>
                         <td>/sync-branches</td>
                         <td class="desc">브랜치 최신화 (alpha/develop merge)</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-category="skill-custom" data-item="skill-pr"></td>
+                        <td>/pr</td>
+                        <td class="desc">PR 리뷰 검토 (수용 여부 판단, 코드 수정)</td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" data-category="skill-custom" data-item="skill-commit"></td>
